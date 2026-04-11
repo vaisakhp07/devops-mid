@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, Response
 from prometheus_client import Counter, Histogram, generate_latest
 
 app = Flask(__name__)
 
-# Metrics
 REQUEST_COUNT = Counter('app_requests_total', 'Total Requests')
 REQUEST_LATENCY = Histogram('app_request_latency_seconds', 'Request latency')
 
@@ -15,4 +14,7 @@ def home():
 
 @app.route("/metrics")
 def metrics():
-    return generate_latest(), 200, {'Content-Type': 'text/plain'}
+    return Response(generate_latest(), mimetype='text/plain')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
